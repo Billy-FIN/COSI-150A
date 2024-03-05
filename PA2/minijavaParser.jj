@@ -1,0 +1,207 @@
+options {
+    IGNORE_CASE = false;
+    LOOKAHEAD = 3;
+}
+
+PARSER_BEGIN(minijavaParser)
+
+import java.io.*;
+
+public class minijavaParser {
+
+    public static void main(String[] args) {
+
+        if (args.length < 1) {
+            System.out.println("Please pass in the filename for a parameter.");
+            System.exit(1);
+        }
+
+        try{
+            SimpleCharStream stream = new SimpleCharStream(new FileInputStream(args[0]), 0, 0);
+            Token temp_token = null;
+            minijavaParserTokenManager TkMgr = new minijavaParserTokenManager(stream);
+            minijavaParser parser = new minijavaParser(TkMgr) ;
+            parser.Start() ;
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + args[0]);
+            System.exit(1);
+        } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        } catch (TokenMgrError e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        } 
+
+        System.out.println("The syntax is correct!");
+    }
+}
+
+PARSER_END(minijavaParser)
+
+void Start():{}
+{
+    Program() <EOF>
+}
+
+SKIP: {
+    "\t"
+    | "\r"
+    | " "
+    | "\n"
+    | <COMMENT: <SINGLE_LINE_COMMENT> >
+}
+
+SKIP :
+{
+  "/*" : WithinComment
+}
+
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+
+<WithinComment> MORE :
+{
+  <~[]>
+}
+
+TOKEN: {
+    < #LETTER : ["a"-"z", "A"-"Z"] >
+    | < #DIGIT : (["0"-"9"])+ >
+}
+
+TOKEN: {
+    <AND: "&&">
+    | <LESS_THAN: "<">
+    | <PLUS: "+">
+    | <MINUS: "-">
+    | <MULTIPLY: "*">
+    | <CLASS: "class">
+    | <EXTENDS: "extends">
+    | <PUBLIC: "public">
+    | <STATIC: "static">
+    | <VOID: "void">
+    | <MAIN: "main">
+    | <STRING: "String">
+    | <INT: "int">
+    | <RETURN: "return">
+    | <BOOLEAN: "boolean">
+    | <IF: "if">
+    | <ELSE: "else">
+    | <WHILE: "while">
+    | <PRINT: "System.out.println">
+    | <DOT: ".">
+    | <LENGTH: "length">
+    | <TRUE: "true">
+    | <FALSE: "false">
+    | <THIS: "this">
+    | <NEW: "new">
+    | <LPARENS: "(">
+    | <RPARENS: ")">
+    | <LBRACKET: "[">
+    | <RBRACKET: "]">
+    | <ASSIGN: "=">
+    | <SEMI_COMMA: ";">
+    | <COMMA: ",">
+    | <NEGATE: "!">
+    | <L_C_BRACKET: "{">
+    | <R_C_BRACKET: "}">
+    | <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | "_")* >
+    | <INTEGER_LITERAL: <DIGIT>>
+    | <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+    | <OTHER: ~[] >
+}
+
+void Exp() :
+{}
+{
+    <INTEGER_LITERAL> [Exp1()]
+   | <TRUE> [Exp1()]
+   | <FALSE> [Exp1()]
+   | <IDENTIFIER> [Exp1()]
+   | <THIS> [Exp1()]
+   | <NEW> <INT> <LBRACKET> Exp() <RBRACKET> [Exp1()]
+   | <NEW> <IDENTIFIER> <LPARENS> <RPARENS> [Exp1()]
+   | <NEGATE> Exp() [Exp1()]
+   | <LPARENS> Exp() <RPARENS> [Exp1()]
+}
+
+void Exp1():
+{}
+{
+    <PLUS> Exp() [Exp1()]
+   | <MINUS> Exp() [Exp1()]
+   | <MULTIPLY> Exp() [Exp1()]
+   | <LESS_THAN> Exp() [Exp1()]
+   | <AND> Exp() [Exp1()]
+   | <LBRACKET> Exp() <RBRACKET> [Exp1()]
+   | <DOT> <LENGTH> [Exp1()]
+   | <DOT> <IDENTIFIER> <LPARENS> [ExpList()] <RPARENS> [Exp1()]
+}
+
+void ExpRest():
+{}
+{
+    <COMMA> Exp()
+}
+
+void ExpList() :
+ {}
+ {
+    Exp() (ExpRest())*
+ }
+
+void Program(): {}
+{
+    MainClass() (ClassDecl())*
+}
+
+void MainClass(): {}
+{
+    <CLASS> <IDENTIFIER> <L_C_BRACKET> <PUBLIC> <STATIC> <VOID> <MAIN> <LPARENS> <STRING> <LBRACKET> <RBRACKET> <IDENTIFIER> <RPARENS> <L_C_BRACKET> Statement() <R_C_BRACKET> <R_C_BRACKET>
+}
+
+void ClassDecl(): {}
+{
+    <CLASS> <IDENTIFIER> ( <EXTENDS> <IDENTIFIER> )? <L_C_BRACKET> (VarDecl())* (MethodDecl())* <R_C_BRACKET>
+}
+
+void VarDecl(): {}
+{
+    Type() <IDENTIFIER> <SEMI_COMMA>
+}
+
+void MethodDecl(): {}
+{
+    <PUBLIC> Type() <IDENTIFIER> <LPARENS> [FormalList()] <RPARENS> <L_C_BRACKET> (VarDecl())* (Statement())* <RETURN> Exp() <SEMI_COMMA> <R_C_BRACKET>
+}
+
+void FormalList(): {}
+{
+    Type() <IDENTIFIER> (FormalRest())*
+}
+
+void FormalRest(): {}
+{
+    <COMMA> Type() <IDENTIFIER>
+}
+
+void Type(): {}
+{
+    <INT> <LBRACKET> <RBRACKET>
+    | <BOOLEAN>
+    | <INT>
+    | <IDENTIFIER>
+}
+
+void Statement(): {}
+{
+    <L_C_BRACKET> (Statement())* <R_C_BRACKET>
+    | <IF> <LPARENS> Exp() <RPARENS> Statement() <ELSE> Statement()
+    | <WHILE> Exp() Statement()
+    | <PRINT> <LPARENS> Exp() <RPARENS> <SEMI_COMMA>
+    | <IDENTIFIER> <ASSIGN> Exp() <SEMI_COMMA>
+    | <IDENTIFIER> <LBRACKET> Exp() <RBRACKET> <ASSIGN> Exp() <SEMI_COMMA>
+}
