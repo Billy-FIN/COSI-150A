@@ -64,7 +64,16 @@ class Demo {
 
             }
             System.out.println(sum);
-
+            if(j < i){
+                System.out.println(j);
+            } else{
+                System.out.println(i);
+                if(j < i){
+                 j = i;
+                } else{
+                 j  = i;
+                }
+            }
             return((sum));
 
 
