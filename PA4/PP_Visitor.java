@@ -68,7 +68,7 @@ import syntaxtree.*;
         }
         String expr = (String) node.e.accept(this,indent);
         return 
-        indentString(indent)+ type+" "+id+"("+formalList+"){\n"+
+        indentString(indent)+ "public " + type+" "+id+"("+formalList+"){\n"+
         varList +
         statementList+
         indentString(indent+1)+"return "+expr +";\n"+

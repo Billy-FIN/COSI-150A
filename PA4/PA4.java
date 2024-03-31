@@ -9,7 +9,7 @@ public class PA4 implements PA4Constants {
     try {
       Program n = t.Start();
 
-
+ //uncomment this only for PA4a
       System.out.println("\n\nPretty Printing the Abstract Syntax Tree");
       Visitor v1 = new AST_Visitor();  // pretty prints the Abstract Syntax Tree
       n.accept(v1, 0);
@@ -19,7 +19,6 @@ public class PA4 implements PA4Constants {
       System.out.println("\n\nPretty Print the Program");
       Visitor v2 = new PP_Visitor();  // pretty prints the MiniC program
       String s = (String) n.accept(v2, 0);
-      System.out.println("#include <stdio.h>\n#include <stdbool.h>\nvoid print(int n){printf(\"%10d\\n\",n);}");
       System.out.println(s);
 
 
@@ -32,21 +31,20 @@ public class PA4 implements PA4Constants {
       System.out.println("BEGIN\n main(1);\nEND.");
 */
 
-/* uncomment this only for PA4c and PA4d 
+// uncomment this only for PA4c and PA4d 
       System.out.println("\n\nGenerating Symbol Table");
       SymbolTableVisitor v3 = new SymbolTableVisitor(); // generates a SymbolTable
       SymbolTable st = v3.symbolTable;
       n.accept(v3,"");
       System.out.println(st);
-*/
 
-/* uncomment this only for PA4d  
+// uncomment this only for PA4d  
       System.out.println("\n\nType Checking");
       TypeCheckingVisitor v4 = new TypeCheckingVisitor(st);
       n.accept(v4,"");
       System.out.println(v4.num_errors+" type errors found");
-*/
-      //System.out.println("\n\nDone!");
+
+      System.out.println("\n\nDone!");
 
     } catch (Exception e) {
       System.out.println("Oops.");
@@ -694,6 +692,22 @@ public class PA4 implements PA4Constants {
     finally { jj_save(10, xla); }
   }
 
+  static private boolean jj_3R_15() {
+    if (jj_scan_token(PLUS_OP)) return true;
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_22() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_25()) {
+    jj_scanpos = xsp;
+    if (jj_3R_26()) return true;
+    }
+    return false;
+  }
+
   static private boolean jj_3R_24() {
     if (jj_scan_token(ID)) return true;
     return false;
@@ -907,22 +921,6 @@ public class PA4 implements PA4Constants {
   static private boolean jj_3R_16() {
     if (jj_scan_token(MINUS_OP)) return true;
     if (jj_3R_21()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_15() {
-    if (jj_scan_token(PLUS_OP)) return true;
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_22() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_25()) {
-    jj_scanpos = xsp;
-    if (jj_3R_26()) return true;
-    }
     return false;
   }
 
