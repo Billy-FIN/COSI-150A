@@ -40,10 +40,15 @@ public class TypeCheckingVisitor implements Visitor {
         // not in miniC
         Exp e1=node.e1;
         Exp e2=node.e2;
-        node.e1.accept(this, data);
-        node.e2.accept(this, data);
+
+        String t1 = (String) node.e1.accept(this, data);
+        String t2 = (String) node.e2.accept(this, data);
+        if (!t1.equals("boolean") || !t2.equals("boolean")) {
+            System.out.println("Type error: " + t1 + " != " + t2+" in node"+node);
+            num_errors++;
+        }
         
-        return "";
+        return "boolean";
     } 
 
     public Object visit(ArrayAssign node, Object data){ 
@@ -69,9 +74,15 @@ public class TypeCheckingVisitor implements Visitor {
         // not in miniC
         Exp e1=node.e1;
         Exp e2=node.e2;
-        node.e1.accept(this, data);
-        node.e2.accept(this, data);
-        return data; 
+
+        String t1 = (String) node.e1.accept(this, data);
+        String t2 = (String) node.e2.accept(this, data);
+        if (!t1.equals("int[]") || !t2.equals("int")) {
+            System.out.println("Type error: ArrayLookUp: " + t1 + " != " + t2+" in node"+node);
+            num_errors++;
+        }
+
+        return "int"; 
     } 
 
     public Object visit(Assign node, Object data){ 
@@ -103,13 +114,13 @@ public class TypeCheckingVisitor implements Visitor {
         // have to check that the method exists and that
         // the types of the formal parameters are the same as
         // the types of the corresponding arguments.
-        //Exp e1 = node.e1; // in miniC there is no e1 for a call
+        Exp e1 = node.e1; // in miniC there is no e1 for a call
         Identifier i = node.i;
         ExpList e2=node.e2;
 
         
         // first we get the method m that this call is calling
-        MethodDecl m = st.methods.get("$"+i.s);
+        MethodDecl m = st.methods.get("$"+ ((String) e1.accept(this, data)) + "$" + i.s);
         
         // paramTypes is the type of the parameters of the method
         // e.g. "int int boolean int"
@@ -135,12 +146,13 @@ public class TypeCheckingVisitor implements Visitor {
         Identifier i = node.i;
         VarDeclList v=node.v;
         MethodDeclList m=node.m;
-        node.i.accept(this, data);
+        String data2 = data + "$" + i.s;
+        node.i.accept(this, data2);
         if (node.v != null){
-            node.v.accept(this, data);
+            node.v.accept(this, data2);
         }
         if (node.m != null){
-            node.m.accept(this, data);
+            node.m.accept(this, data2);
         }
         return data;
     } 
@@ -212,12 +224,26 @@ public class TypeCheckingVisitor implements Visitor {
         String s=node.s;  
         String result = st.typeName.get(data+"$"+s);
 
+        if(result == null) {
+          String data2 = (String) data;
+          int endIndex = data2.indexOf("$", 1);
+          if(endIndex == -1) {
+            endIndex = data2.length();
+          }
+          result = st.typeName.get(data2.substring(0, endIndex)+"$"+s);
+        }
+
         return result; 
     }
 
     public Object visit(IdentifierExp node, Object data){ 
         String s=node.s;
-        String result = st.typeName.get(data+"$"+s);
+        String result = st.typeName.get(data+"$"+s); // $className$methodName$idName
+
+        if(result == null) {
+          String data2 = (String) data;
+          result = st.typeName.get(data2.substring(0, data2.indexOf("$", 1))+"$"+s);
+        }
 
         return result; 
     }
@@ -339,7 +365,7 @@ public class TypeCheckingVisitor implements Visitor {
         Exp e=node.e;
         node.e.accept(this, data);
 
-        return data; 
+        return "int[]"; 
     }
 
 
@@ -348,7 +374,7 @@ public class TypeCheckingVisitor implements Visitor {
         Identifier i=node.i;
         node.i.accept(this, data);
 
-        return data; 
+        return i.s; 
     }
 
 
@@ -378,7 +404,7 @@ public class TypeCheckingVisitor implements Visitor {
     public Object visit(Print node, Object data){ 
         Exp e=node.e;
         String t1 = (String) node.e.accept(this, data);
-        if (!t1.equals("int")) {
+        if (!t1.equals("int") && !t1.equals("int[]") && !t1.equals("boolean")) {
             System.out.println("Print Type error: " + t1 + " is not a valid type for print");
             num_errors++;
         }
@@ -416,7 +442,8 @@ public class TypeCheckingVisitor implements Visitor {
 
     public Object visit(This node, Object data){ 
         // not in miniC
-        return data; 
+        String data2 = (String) data;
+        return data2.substring(1, data2.indexOf("$", 1)); 
     }
 
 
@@ -448,6 +475,8 @@ public class TypeCheckingVisitor implements Visitor {
         if (node.t instanceof BooleanType) {
             return "boolean";
         } else if (node.t instanceof IntegerType) {
+            return "int";
+        } else if (node.t instanceof IntArrayType) {
             return "int";
         } else {
             System.out.println("Unknown Type, Type error: " + node.t + " is not a valid type");

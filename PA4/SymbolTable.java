@@ -17,7 +17,6 @@ public class SymbolTable {
         String result="";
 
         if (mainClass!=null){
-            mainClassName = mainClass.i.s;
             result = "\nMain Class:\n$"+ mainClassName+":"+mainClass.toString() + "\n";
         }
         if (classes !=null){

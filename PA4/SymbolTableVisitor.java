@@ -84,9 +84,10 @@ public class SymbolTableVisitor implements Visitor {
     VarDeclList v=node.v;
     MethodDeclList m=node.m;
     node.i.accept(this, data);
-    node.v.accept(this, data);
-    node.m.accept(this, data);
+    node.v.accept(this, "$" + i.s);
+    node.m.accept(this, "$" + i.s);
     symbolTable.classes.put(data + "$" + i.s, node);
+    symbolTable.typeName.put(data + "$" + i.s, "*class");
 
     return data;
   } 
@@ -208,6 +209,8 @@ public class SymbolTableVisitor implements Visitor {
         node.i.accept(this, data);
         node.s.accept(this, data);
         symbolTable.mainClass = node;
+        symbolTable.mainClassName = i.s;
+        symbolTable.typeName.put(data + "$" + i.s, "*class");
 
         return data; 
     }
