@@ -16,7 +16,7 @@ public class PA4 implements PA4Constants {
 */
 
  //uncomment this only for PA4b
-      System.out.println("\n\nPretty Print the Program");
+//      System.out.println("\n\nPretty Print the Program");
       Visitor v2 = new PP_Visitor();  // pretty prints the MiniJ program
       String s = (String) n.accept(v2, 0);
       System.out.println(s);

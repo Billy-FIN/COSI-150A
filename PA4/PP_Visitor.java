@@ -33,7 +33,7 @@ import syntaxtree.*;
        if (node.c!=null){
            c = (String) node.c.accept(this,data);
        }
-       return m + " " + c;
+       return m + "\n" + c;
    }
     //edited by me
    //edited by me
@@ -42,7 +42,7 @@ import syntaxtree.*;
        String i = (String)node.i.accept(this, indent);
        String v = (String)node.v.accept(this, indent+1);
        String m = (String)node.m.accept(this, indent+1);
-     return "class " + i + "{\n" + v + m + "}";
+       return "class " + i + "{\n" + v + m + "}";
    }
    public Object visit(VarDecl node, Object data){
         int indent = (int) data; 
@@ -96,7 +96,7 @@ import syntaxtree.*;
    public Object visit(BooleanType node, Object data){
         // 
         int indent = (int) data; 
-        return "bool";
+        return "boolean";
    }
    public Object visit(IdentifierType node, Object data){
        int indent = (int) data;
@@ -214,11 +214,11 @@ import syntaxtree.*;
    public Object visit(Call node, Object data){
         // 
         int indent = (int) data; 
-        //String e1 = (String) node.e1.accept(this,indent);
+        String e1 = (String) node.e1.accept(this,indent);
         String i = (String) node.i.accept(this,indent);
         String e2 = (String) node.e2.accept(this,indent);
 
-        return i+"("+e2+")";
+        return e1 + "." + i+"("+e2+")";
    }
    public Object visit(IntegerLiteral node, Object data){
         int indent = (int) data; 
@@ -260,7 +260,7 @@ import syntaxtree.*;
 
        int indent = (int)data;
        String i = (String)node.i.accept(this, indent);
-       return "new " + i;
+       return "new " + i + "()";
    }
 //edited by me
    public Object visit(Not node, Object data){
@@ -344,6 +344,8 @@ public Object visit(ExpList node, Object data){
         result = result+t;
         return result;
    }
+
+
    public Object visit(VarDeclList node, Object data){
         // 
         int indent = (int) data; 
