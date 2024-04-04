@@ -10,14 +10,14 @@ public class PA4 implements PA4Constants {
       Program n = t.Start();
 
  //uncomment this only for PA4a
-      System.out.println("\n\nPretty Printing the Abstract Syntax Tree");
+ /*     System.out.println("\n\nPretty Printing the Abstract Syntax Tree");
       Visitor v1 = new AST_Visitor();  // pretty prints the Abstract Syntax Tree
-      n.accept(v1, 0);
-
+      n.accept(v1, 0);f
+*/
 
  //uncomment this only for PA4b
       System.out.println("\n\nPretty Print the Program");
-      Visitor v2 = new PP_Visitor();  // pretty prints the MiniC program
+      Visitor v2 = new PP_Visitor();  // pretty prints the MiniJ program
       String s = (String) n.accept(v2, 0);
       System.out.println(s);
 
@@ -31,21 +31,21 @@ public class PA4 implements PA4Constants {
       System.out.println("BEGIN\n main(1);\nEND.");
 */
 
-// uncomment this only for PA4c and PA4d 
-      System.out.println("\n\nGenerating Symbol Table");
+// uncomment this only for PA4c and PA4d
+  /*    System.out.println("\n\nGenerating Symbol Table");
       SymbolTableVisitor v3 = new SymbolTableVisitor(); // generates a SymbolTable
       SymbolTable st = v3.symbolTable;
       n.accept(v3,"");
       System.out.println(st);
-
+*/
 // uncomment this only for PA4d  
-      System.out.println("\n\nType Checking");
+ /*     System.out.println("\n\nType Checking");
       TypeCheckingVisitor v4 = new TypeCheckingVisitor(st);
       n.accept(v4,"");
       System.out.println(v4.num_errors+" type errors found");
 
       System.out.println("\n\nDone!");
-
+*/
     } catch (Exception e) {
       System.out.println("Oops.");
       System.out.println(e.getMessage());

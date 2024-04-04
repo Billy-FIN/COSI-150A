@@ -22,7 +22,8 @@ import syntaxtree.*;
          String i = (String) node.i.accept(this, indent);
          String s = (String) node.s.accept(this, indent);
 
-         return "class " + i + "{\n" + indentString(indent+1) + "public static void main(String[] args){\n" + indentString(indent+2) + s + "}\n";
+         return "class " + i + "{\n" + indentString(indent+1) + "public static void main(String[] args){"+ "\n\n" + indentString(indent+2) + s + indentString(indent+1) + "}" + "\n}\n";
+
      }
    public Object visit(Program node, Object data){
 
@@ -303,7 +304,7 @@ public Object visit(ExpList node, Object data){
         String e = (String) node.e.accept(this,indent);
         if (node.elist!=null){
             String e1 = (String) node.elist.accept(this,indent);
-            e = e1 + ","+e;
+            e = e1 + ", "+e;
         }
 
         return e;
@@ -314,7 +315,7 @@ public Object visit(ExpList node, Object data){
         String f = (String) node.f.accept(this,indent);
         if (node.flist!=null){
             String f1 = (String) node.flist.accept(this,indent);
-            f = f1 +","+f;
+            f = f1 +", "+f;
         }
         //--indent;
         return f;
