@@ -7,19 +7,22 @@ class Test{
     boolean debugging;
     int[] log;
     int max;
+    nonexistantType x;
+
 
     public boolean init(boolean d,int m){
         debugging = d;
         max = m;
+        max = max.length;
         log = new int[m];
-        return d;
+        return log;
     }
 
-
-    public int finish(lkjfaj y){
-     nonexistanttype haha;
+    public int finish(lkjfaj y, Test t, Test u){
+    Test t;
+     afs haha;
      boolean b;
-     b = b;
+     b = haha;
      return 1;
     }
 
@@ -30,6 +33,7 @@ class Test{
         t = this;
         max=10;
         b=(0<max) && (max<10);
+        b=t.init(b);
         b=t.init(b,max);
         i=0;
         while (i<max){
@@ -38,5 +42,6 @@ class Test{
         }
         return log[max-1];
     }
-
 }
+
+

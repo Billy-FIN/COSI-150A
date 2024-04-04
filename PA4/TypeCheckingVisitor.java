@@ -1,6 +1,6 @@
 import syntaxtree.*;
 import java.util.HashMap;
-
+import java.util.ArrayList;
 /*
  * TypeCheckingVisitor
  *    This currently only checks MiniC programs for type errors.
@@ -16,19 +16,18 @@ import java.util.HashMap;
  * and will use "*void"  for statements and nodes that don't have a type
  */
 public class TypeCheckingVisitor implements Visitor {
-
     public SymbolTable st;
 
     public int num_errors=0;
 
     public static PP_Visitor miniC = new PP_Visitor();
-
+    public ArrayList<String> classNames = new ArrayList<>();
     public TypeCheckingVisitor(SymbolTable st) {
         this.st = st;
     }
 
     public static String getTypeName(Object node){
-        // we only recognize 3 types in miniC  int, boolean, and *void
+        // we only recognize 3 types  int, boolean, and *void
         if (node.getClass().equals(syntaxtree.BooleanType.class)){
             return "boolean";
         }else if (node.getClass().equals(syntaxtree.IntegerType.class)){
@@ -144,6 +143,7 @@ public class TypeCheckingVisitor implements Visitor {
     public Object visit(ClassDecl node, Object data){ 
         // not in miniC
         Identifier i = node.i;
+        classNames.add(i.s);
         VarDeclList v=node.v;
         MethodDeclList m=node.m;
         String data2 = data + "$" + i.s;
@@ -192,16 +192,19 @@ public class TypeCheckingVisitor implements Visitor {
         return "boolean";
     } 
 
-    public Object visit(Formal node, Object data){ 
+    public Object visit(Formal node, Object data){
         Identifier i=node.i;
         Type t=node.t;
         //node.i.accept(this, data);
-        //node.t.accept(this, data);  
+        //node.t.accept(this, data);
         if (node.t instanceof BooleanType) {
             return "boolean";
         } else if (node.t instanceof IntegerType) {
             return "int";
-        } else {
+        } else if (classNames.contains(((IdentifierType) node.t).s)) {
+            return (String)(((IdentifierType)node.t).s);
+        }
+        else {
             System.out.println("Formal Type error: " + node.t + " is not a valid type");
             num_errors++;
             return "*void";
@@ -239,7 +242,6 @@ public class TypeCheckingVisitor implements Visitor {
     public Object visit(IdentifierExp node, Object data){ 
         String s=node.s;
         String result = st.typeName.get(data+"$"+s); // $className$methodName$idName
-
         if(result == null) {
           String data2 = (String) data;
           result = st.typeName.get(data2.substring(0, data2.indexOf("$", 1))+"$"+s);
@@ -251,8 +253,7 @@ public class TypeCheckingVisitor implements Visitor {
     public Object visit(IdentifierType node, Object data){
         // not in miniC
         String s=node.s;
-
-        return data; 
+        return data;
     }
 
     public Object visit(If node, Object data){ 
@@ -311,13 +312,13 @@ public class TypeCheckingVisitor implements Visitor {
         VarDeclList v=node.v;
         StatementList s=node.s;
         Exp e=node.e;
-        //node.t.accept(this, data);
-        //node.i.accept(this, data);
+        node.t.accept(this, data);
+        node.i.accept(this, data);
         if (node.f != null){
-            //node.f.accept(this, data);
+            node.f.accept(this, data);
         }
         if (node.v != null){
-            //node.v.accept(this, data);
+            node.v.accept(this, data);
         }
         if (node.s != null){
             node.s.accept(this, data+"$"+i.s);
@@ -477,7 +478,9 @@ public class TypeCheckingVisitor implements Visitor {
         } else if (node.t instanceof IntegerType) {
             return "int";
         } else if (node.t instanceof IntArrayType) {
-            return "int";
+            return "int[]";
+        } else if (classNames.contains(((IdentifierType) node.t).s)) {
+            return (String)(((IdentifierType)node.t).s);
         } else {
             System.out.println("Unknown Type, Type error: " + node.t + " is not a valid type");
             num_errors++;
@@ -487,7 +490,7 @@ public class TypeCheckingVisitor implements Visitor {
     }
 
 
-    public Object visit(VarDeclList node, Object data){ 
+    public Object visit(VarDeclList node, Object data){
         VarDecl v=node.v;
         VarDeclList vlist=node.vlist;
         node.v.accept(this, data);
