@@ -192,6 +192,7 @@ public class PA5 implements PA5Constants {
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IF:
+      case WHILE:
       case PRINTLN:
       case LCURLY:
       case ID:
@@ -229,6 +230,14 @@ public class PA5 implements PA5Constants {
       jj_consume_token(ELSE);
       s2 = Statement();
    {if (true) return(new If(e1,s1,s2));}
+      break;
+    case WHILE:
+      jj_consume_token(WHILE);
+      jj_consume_token(LPAREN);
+      e1 = Exp();
+      jj_consume_token(RPAREN);
+      s1 = Statement();
+   {if (true) return(new While(e1,s1));}
       break;
     case PRINTLN:
       jj_consume_token(PRINTLN);
@@ -494,18 +503,6 @@ public class PA5 implements PA5Constants {
     finally { jj_save(6, xla); }
   }
 
-  static private boolean jj_3_3() {
-    if (jj_scan_token(ID)) return true;
-    if (jj_scan_token(EQUALS)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_6() {
-    if (jj_scan_token(TIMES_OP)) return true;
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_29() {
     if (jj_scan_token(ID)) return true;
     return false;
@@ -516,14 +513,14 @@ public class PA5 implements PA5Constants {
     return false;
   }
 
-  static private boolean jj_3R_20() {
-    if (jj_scan_token(INT)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_13() {
     if (jj_scan_token(MINUS_OP)) return true;
     if (jj_3R_17()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    if (jj_scan_token(INT)) return true;
     return false;
   }
 
@@ -545,6 +542,11 @@ public class PA5 implements PA5Constants {
     return false;
   }
 
+  static private boolean jj_3R_27() {
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
   static private boolean jj_3_2() {
     if (jj_scan_token(BOOLEAN)) return true;
     return false;
@@ -557,11 +559,6 @@ public class PA5 implements PA5Constants {
     jj_scanpos = xsp;
     if (jj_3R_20()) return true;
     }
-    return false;
-  }
-
-  static private boolean jj_3R_27() {
-    if (jj_scan_token(FALSE)) return true;
     return false;
   }
 
@@ -607,14 +604,14 @@ public class PA5 implements PA5Constants {
     return false;
   }
 
-  static private boolean jj_3R_10() {
-    if (jj_3R_16()) return true;
-    if (jj_scan_token(ID)) return true;
+  static private boolean jj_3R_11() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
-  static private boolean jj_3R_11() {
-    if (jj_3R_17()) return true;
+  static private boolean jj_3R_10() {
+    if (jj_3R_16()) return true;
+    if (jj_scan_token(ID)) return true;
     return false;
   }
 
@@ -639,11 +636,6 @@ public class PA5 implements PA5Constants {
     return false;
   }
 
-  static private boolean jj_3_1() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
@@ -651,6 +643,11 @@ public class PA5 implements PA5Constants {
     jj_scanpos = xsp;
     if (jj_3R_22()) return true;
     }
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    if (jj_3R_10()) return true;
     return false;
   }
 
@@ -666,6 +663,18 @@ public class PA5 implements PA5Constants {
 
   static private boolean jj_3R_15() {
     if (jj_3R_19()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_scan_token(ID)) return true;
+    if (jj_scan_token(EQUALS)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_6() {
+    if (jj_scan_token(TIMES_OP)) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -692,7 +701,7 @@ public class PA5 implements PA5Constants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2000,0x6000,0x8000000,0x120000,0x120000,0x40000000,0x0,0x1018000,0x18000,0x0,0x8000000,};
+      jj_la1_0 = new int[] {0x2000,0x6000,0x8000000,0x1a0000,0x1a0000,0x40000000,0x0,0x1018000,0x18000,0x0,0x8000000,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x820,0x20,0x0,0x180,0xc02,0x402,0x800,0x0,};

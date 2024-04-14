@@ -269,7 +269,9 @@ Statement Statement() :
   |
   <IF> <LPAREN> e1=Exp()<RPAREN> s1=Statement() <ELSE> s2=Statement()
   {return(new If(e1,s1,s2));}
-
+  |
+  <WHILE> <LPAREN> e1=Exp()<RPAREN> s1=Statement()
+  {return(new While(e1,s1));}
   |
   <PRINTLN> <LPAREN> e1=Exp() <RPAREN> <SEMICOLON> 
   {return(new Print(e1));}

@@ -10,7 +10,7 @@ int fibs(int n) {
     a=0;
     b=1;
     i=1;
-    while (i<n) {
+    while (i<n && i<n) {
         temp = a+b;
         a = b;
         b = temp;
