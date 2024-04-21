@@ -56,10 +56,12 @@ public class PA5 {
 /* uncomment this only for PA5 */
       //System.out.println("\n\nCode Generation");
       CodeGen_Visitor v5 = new CodeGen_Visitor();
-      String result = (String) n.accept(v5,"");
-      System.out.println(result);
+      if(n!=null){
+        String result = (String) n.accept(v5,"");
+        System.out.println(result);
+      }
 
-      //System.out.println("\n\nDone!");
+      System.out.println("\n\nDone!");
 
     } catch (Exception e) {
       System.out.println("Oops.");
@@ -85,6 +87,7 @@ TOKEN:
 {
    <PUBLIC:     "public">
 |  <PREFACE:    "#include <stdio.h>\n#include <stdbool.h>\nvoid print(int n){printf(\"%10d\\n\",n);}">
+|  <PREFACE1:    "#include <stdio.h>\n#include <stdbool.h>\nvoid print(int n){printf(\"%10d\\n\",n);}\n#include <stdlib.h>">
 |  <CLASS:      "class">
 |  <STATIC:     "static">
 |  <VOID:       "void">
@@ -131,7 +134,7 @@ MethodDeclList Start():
   MethodDeclList ms;
 }
 {
-  <PREFACE>
+  (<PREFACE> | <PREFACE1>)
    ms = MethodDecls()
   {return ms;}
   <EOF>

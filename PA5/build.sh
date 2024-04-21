@@ -11,3 +11,8 @@ java PA5 < tests/demo_while.c > tests/demo_while.s
 echo "written to tests/demo.s"
 cd tests; gcc demo_while.s print.s -o demo_while; ./demo_while
 
+cd ..
+java PA5 < tests/demo_array.minic #> tests/demo_array.s
+#echo "written to tests/demo_array.s"
+#cd tests; gcc demo_array.s print.s -o demo_array; ./demo_array
+

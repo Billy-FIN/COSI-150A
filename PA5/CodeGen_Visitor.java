@@ -69,26 +69,38 @@ public class CodeGen_Visitor implements Visitor {
         Identifier i = node.i;
         Exp e1=node.e1;
         Exp e2=node.e2;
-        node.i.accept(this,data);
-        node.e1.accept(this, data);
-        node.e2.accept(this, data);
-        return "# ArrayAssign not implemented\n";
+        String indexCode = (String) node.e1.accept(this, data);
+        String valueCode = (String) node.e2.accept(this, data);
+        String arrayLocation = varMap.get(currClass + "_" + currMethod + "_" + i.s);
+        return indexCode +                              // Calculate index
+        valueCode +                              // Calculate value
+        "popq %rax\n" +                          // Pop value into rax
+        "popq %rcx\n" +                          // Pop index into rcx
+        "movq %rax, (" + arrayLocation + ", %rcx, $8)\n";
     }
 
     public Object visit(ArrayLength node, Object data){
         // not in MiniC
         Exp e=node.e;
-        node.e.accept(this, data);
-        return "#Array Length not implemented\n";
+        String arrayCode = (String) node.e.accept(this, data);
+        return arrayCode +                             // Calculate array address
+        "popq %rax\n" +                         // Pop array address into rax
+        "movq (%rax), %rax\n" +                 // Assume length is stored at base of array
+        "pushq %rax\n";
     }
 
     public Object visit(ArrayLookup node, Object data){
         // not in MiniC
         Exp e1=node.e1;
         Exp e2=node.e2;
-        node.e1.accept(this, data);
-        node.e2.accept(this, data);
-        return "#ArrayLookup not implemented\n";
+        String arrayCode = (String) node.e1.accept(this, data);
+        String indexCode = (String) node.e2.accept(this, data);
+        return arrayCode +                             // Calculate array base address
+        indexCode +                             // Calculate index
+        "popq %rcx\n" +                         // Pop index into rcx
+        "popq %rax\n" +                         // Pop base address into rax
+        "movq (%rax, %rcx, $8), %rax\n" +        // Load element at array[index] into rax
+        "pushq %rax\n";
     }
 
     public Object visit(Assign node, Object data){
@@ -688,9 +700,12 @@ public class CodeGen_Visitor implements Visitor {
     public Object visit(NewArray node, Object data){
         // not in MiniC
         Exp e=node.e;
-        node.e.accept(this, data);
+        String sizeCode = (String) node.e.accept(this, data);
 
-        return "# NewArray not implemented\n";
+        return sizeCode +                                  // Generate code to evaluate size
+        "popq %rdi\n" +                             // Move size into rdi (common convention for first argument)
+        "call allocateArray\n" +                    // Call allocateArray(size) - assumes it allocates size * element size + size for length
+        "pushq %rax\n"; 
     }
 
 
