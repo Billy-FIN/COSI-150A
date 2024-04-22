@@ -8,11 +8,11 @@ public class prettyPrinter {
 
   /** Main entry point. */
   public static void main(String args[]) {
-    System.out.println("Reading from standard input...");
+    //System.out.println("Reading from standard input...");
     prettyPrinter t = new prettyPrinter(System.in);
     try {
       t.Start(0);
-      System.out.println("Thank you.");
+      //System.out.println("Thank you.");
     } catch (Exception e) {
       System.out.println("Oops.");
       System.out.println(e.getMessage());
@@ -146,9 +146,17 @@ String ExpRest(int indentLevel):
 String ExpList(int indentLevel) :
  {String expr="", temp = "", temp1 = "";}
  {
-    temp = Exp(indentLevel) (temp1 = ExpRest(indentLevel))* {expr = temp + temp1;}
+    temp = Exp(indentLevel) temp1 = ExpList1(indentLevel) {expr = temp + temp1;}
     {return expr;}
  }
+
+String ExpList1(int indentLevel) :
+ {String expr="", temp = "", temp1 = "";}
+ {
+    temp=ExpRest(indentLevel) temp1=ExpList1(indentLevel) {expr = temp + temp1;}
+    {return expr;} | {return expr;}
+ }
+
 
 String Program(int indentLevel):
 {String expr="", temp = "", temp1 = "";}

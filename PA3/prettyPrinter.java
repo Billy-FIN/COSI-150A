@@ -3,11 +3,11 @@ public class prettyPrinter implements prettyPrinterConstants {
 
   /** Main entry point. */
   public static void main(String args[]) {
-    System.out.println("Reading from standard input...");
+    //System.out.println("Reading from standard input...");
     prettyPrinter t = new prettyPrinter(System.in);
     try {
       t.Start(0);
-      System.out.println("Thank you.");
+      //System.out.println("Thank you.");
     } catch (Exception e) {
       System.out.println("Oops.");
       System.out.println(e.getMessage());
@@ -147,17 +147,22 @@ public class prettyPrinter implements prettyPrinterConstants {
   static final public String ExpList(int indentLevel) throws ParseException {
   String expr="", temp = "", temp1 = "";
     temp = Exp(indentLevel);
-    label_1:
-    while (true) {
-      if (jj_2_21(3)) {
-        ;
-      } else {
-        break label_1;
-      }
-      temp1 = ExpRest(indentLevel);
-    }
-                                                             expr = temp + temp1;
+    temp1 = ExpList1(indentLevel);
+                                                           expr = temp + temp1;
      {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public String ExpList1(int indentLevel) throws ParseException {
+  String expr="", temp = "", temp1 = "";
+    if (jj_2_21(3)) {
+      temp = ExpRest(indentLevel);
+      temp1 = ExpList1(indentLevel);
+                                                           expr = temp + temp1;
+     {if (true) return expr;}
+    } else {
+                      {if (true) return expr;}
+    }
     throw new Error("Missing return statement in function");
   }
 
@@ -165,12 +170,12 @@ public class prettyPrinter implements prettyPrinterConstants {
  String expr="", temp = "", temp1 = "";
     temp = MainClass(indentLevel);
                                    expr += temp;
-    label_2:
+    label_1:
     while (true) {
       if (jj_2_22(3)) {
         ;
       } else {
-        break label_2;
+        break label_1;
       }
       temp1 = ClassDecl(indentLevel);
                                      expr += temp1;
@@ -220,22 +225,22 @@ public class prettyPrinter implements prettyPrinterConstants {
     }
     jj_consume_token(L_C_BRACKET);
                     expr += "{\n";
-    label_3:
+    label_2:
     while (true) {
       if (jj_2_24(3)) {
         ;
       } else {
-        break label_3;
+        break label_2;
       }
       temp = VarDecl(indentLevel);
                                    expr += temp;
     }
-    label_4:
+    label_3:
     while (true) {
       if (jj_2_25(3)) {
         ;
       } else {
-        break label_4;
+        break label_3;
       }
       temp1 = MethodDecl(indentLevel);
                                        expr += temp1;
@@ -275,22 +280,22 @@ public class prettyPrinter implements prettyPrinterConstants {
     jj_consume_token(RPARENS);
     jj_consume_token(L_C_BRACKET);
                              expr += "){\n";
-    label_5:
+    label_4:
     while (true) {
       if (jj_2_27(3)) {
         ;
       } else {
-        break label_5;
+        break label_4;
       }
       varDecl = VarDecl(indentLevel);
                                      expr += varDecl;
     }
-    label_6:
+    label_5:
     while (true) {
       if (jj_2_28(3)) {
         ;
       } else {
-        break label_6;
+        break label_5;
       }
       statement = Statement(indentLevel);
                                          expr += statement;
@@ -311,12 +316,12 @@ public class prettyPrinter implements prettyPrinterConstants {
     type = Type(indentLevel);
     t = jj_consume_token(IDENTIFIER);
                                            expr += type + " " + t.image;
-    label_7:
+    label_6:
     while (true) {
       if (jj_2_29(3)) {
         ;
       } else {
-        break label_7;
+        break label_6;
       }
       formalRest = FormalRest(indentLevel);
                                            expr += formalRest;
@@ -365,12 +370,12 @@ public class prettyPrinter implements prettyPrinterConstants {
     if (jj_2_35(3)) {
       jj_consume_token(L_C_BRACKET);
                     expr += "{\n";
-      label_8:
+      label_7:
       while (true) {
         if (jj_2_34(3)) {
           ;
         } else {
-          break label_8;
+          break label_7;
         }
         statement = Statement(indentLevel+1);
                                         expr += statement;
@@ -703,24 +708,9 @@ public class prettyPrinter implements prettyPrinterConstants {
     finally { jj_save(39, xla); }
   }
 
-  static private boolean jj_3_25() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_24() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
   static private boolean jj_3_23() {
     if (jj_scan_token(EXTENDS)) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_21() {
-    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -734,8 +724,12 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
+  static private boolean jj_3R_19() {
+    return false;
+  }
+
   static private boolean jj_3_11() {
-    if (jj_3R_11()) return true;
+    if (jj_3R_10()) return true;
     return false;
   }
 
@@ -744,40 +738,46 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
-  static private boolean jj_3R_11() {
-    if (jj_3R_9()) return true;
+  static private boolean jj_3R_12() {
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_21()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_3_21()) {
+    jj_scanpos = xsp;
+    if (jj_3R_19()) return true;
     }
+    return false;
+  }
+
+  static private boolean jj_3_21() {
+    if (jj_3R_11()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
   static private boolean jj_3_40() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(LBRACKET)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_39() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(ASSIGN)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_38() {
     if (jj_scan_token(PRINT)) return true;
     if (jj_scan_token(LPARENS)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_37() {
     if (jj_scan_token(WHILE)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     if (jj_3R_17()) return true;
     return false;
   }
@@ -785,13 +785,13 @@ public class prettyPrinter implements prettyPrinterConstants {
   static private boolean jj_3_36() {
     if (jj_scan_token(IF)) return true;
     if (jj_scan_token(LPARENS)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
-  static private boolean jj_3R_12() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_9()) return true;
+  static private boolean jj_3R_10() {
+    if (jj_3R_8()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -833,8 +833,52 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
+  static private boolean jj_3R_11() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_33() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_32() {
+    if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_31() {
+    if (jj_scan_token(BOOLEAN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_30() {
+    if (jj_scan_token(INT)) return true;
+    if (jj_scan_token(LBRACKET)) return true;
+    if (jj_scan_token(RBRACKET)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_30()) {
+    jj_scanpos = xsp;
+    if (jj_3_31()) {
+    jj_scanpos = xsp;
+    if (jj_3_32()) {
+    jj_scanpos = xsp;
+    if (jj_3_33()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
   static private boolean jj_3_20() {
-    if (jj_3R_10()) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
@@ -853,80 +897,54 @@ public class prettyPrinter implements prettyPrinterConstants {
 
   static private boolean jj_3_17() {
     if (jj_scan_token(LBRACKET)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     if (jj_scan_token(RBRACKET)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_33() {
-    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
   static private boolean jj_3_16() {
     if (jj_scan_token(AND)) return true;
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_32() {
-    if (jj_scan_token(INT)) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_15() {
     if (jj_scan_token(LESS_THAN)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
-  static private boolean jj_3_31() {
-    if (jj_scan_token(BOOLEAN)) return true;
+  static private boolean jj_3R_18() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_20()) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
   static private boolean jj_3_14() {
     if (jj_scan_token(MULTIPLY)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_13() {
     if (jj_scan_token(MINUS)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
   static private boolean jj_3_12() {
     if (jj_scan_token(PLUS)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
-  static private boolean jj_3_30() {
-    if (jj_scan_token(INT)) return true;
-    if (jj_scan_token(LBRACKET)) return true;
-    if (jj_scan_token(RBRACKET)) return true;
+  static private boolean jj_3_29() {
+    if (jj_3R_18()) return true;
     return false;
   }
 
-  static private boolean jj_3R_19() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_30()) {
-    jj_scanpos = xsp;
-    if (jj_3_31()) {
-    jj_scanpos = xsp;
-    if (jj_3_32()) {
-    jj_scanpos = xsp;
-    if (jj_3_33()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_10() {
+  static private boolean jj_3R_9() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_12()) {
@@ -956,33 +974,32 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
-  static private boolean jj_3R_18() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_19()) return true;
+  static private boolean jj_3R_16() {
+    if (jj_3R_20()) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_29()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 
   static private boolean jj_3_10() {
-    if (jj_3R_10()) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
   static private boolean jj_3_9() {
     if (jj_scan_token(LPARENS)) return true;
-    if (jj_3R_9()) return true;
+    if (jj_3R_8()) return true;
     if (jj_scan_token(RPARENS)) return true;
     return false;
   }
 
   static private boolean jj_3_8() {
     if (jj_scan_token(NEGATE)) return true;
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_29() {
-    if (jj_3R_18()) return true;
+    if (jj_3R_8()) return true;
     return false;
   }
 
@@ -1000,24 +1017,23 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
-  static private boolean jj_3R_16() {
-    if (jj_3R_19()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_29()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   static private boolean jj_3_5() {
     if (jj_scan_token(THIS)) return true;
     return false;
   }
 
+  static private boolean jj_3_28() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
   static private boolean jj_3_4() {
     if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_27() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1036,7 +1052,19 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
-  static private boolean jj_3R_9() {
+  static private boolean jj_3_26() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_15() {
+    if (jj_scan_token(PUBLIC)) return true;
+    if (jj_3R_20()) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_8() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_1()) {
@@ -1069,32 +1097,20 @@ public class prettyPrinter implements prettyPrinterConstants {
     return false;
   }
 
-  static private boolean jj_3_28() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_27() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_26() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_15() {
-    if (jj_scan_token(PUBLIC)) return true;
-    if (jj_3R_19()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_14() {
-    if (jj_3R_19()) return true;
+    if (jj_3R_20()) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(SEMICOLON)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_25() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_24() {
+    if (jj_3R_14()) return true;
     return false;
   }
 

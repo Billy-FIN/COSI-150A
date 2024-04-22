@@ -1,4 +1,3 @@
-Reading from standard input...
 class mjPP{
     public static void main(String[] args){
         System.out.println((new Demo()).go(10, 3));
@@ -20,7 +19,7 @@ class Demo{
         int n;
         d = new Demo();
         n = 10;
-        n = d.setValues(num, true);
+        n = d.setValues(num, n, true);
         n = d.run(n);
         return n;
     }
@@ -75,4 +74,3 @@ class Demo{
 
 }
 
-Thank you.
